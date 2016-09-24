@@ -25,6 +25,8 @@ namespace DiscoBot
 
         //ArrayList myWhite = new ArrayList();
         List<ulong> mywhiteList = new List<ulong>();
+        string token = LoadToken();
+        
         
 
         public MyBot()
@@ -52,6 +54,8 @@ namespace DiscoBot
             whitelist = new ulong[]{
                 192750776005689344
             };
+
+            
 
 
  
@@ -109,7 +113,7 @@ namespace DiscoBot
 
             discord.ExecuteAndWait(async () =>
             {
-                await discord.Connect("MjI5Mjg3OTU1MDAzNDczOTIw.CsiSuQ.Cf_Kj3vcsx5kHQHhZA3Bo8Law5k", TokenType.Bot);
+                await discord.Connect(token, TokenType.Bot);
             });
 
         }
@@ -151,7 +155,7 @@ namespace DiscoBot
                 {
                     if (e.User.Id == mywhiteList[0])
                     {
-                        string save = "C:\\Users\\Daniele\\OneDrive\\Dokumente\\RemBot\\DiscoBot\\whitelist.txt";
+                        string save = "C:\\Users\\Daniele\\OneDrive\\Dokumente\\GitHub\\Rem-Discord-Bot\\whitelist.txt";
                         //mywhiteList.ForEach(Console.WriteLine);
                         //File.WriteAllLines(save, mywhiteList);
                         StreamWriter file = new System.IO.StreamWriter(save);
@@ -170,7 +174,7 @@ namespace DiscoBot
                 {
                     if (e.User.Id == mywhiteList[0])
                     {
-                        string load = "C:\\Users\\Daniele\\OneDrive\\Dokumente\\RemBot\\DiscoBot\\whitelist.txt";
+                        string load = "C:\\Users\\Daniele\\OneDrive\\Dokumente\\GitHub\\Rem-Discord-Bot\\whitelist.txt";
                         StreamReader sr1 = new StreamReader(load);
                         while (sr1.Peek() > -1)
                         {
@@ -196,6 +200,14 @@ namespace DiscoBot
                         await e.Channel.SendMessage("You do not have Permission to use this command!");
                     }
                 });
+        }
+
+        private static string LoadToken()
+        {
+            string load = "C:\\Users\\Daniele\\OneDrive\\Dokumente\\GitHub\\Rem-Discord-Bot\\config.txt";
+            StreamReader sr1 = new StreamReader(load);
+            string temp = sr1.ReadLine();
+            return temp;
         }
 
 
