@@ -1,5 +1,6 @@
 ﻿using Discord;
 using Discord.Commands;
+using Discord.Modules;
 
 using System;
 using System.Collections.Generic;
@@ -8,6 +9,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Collections;
 using System.IO;
+using System.Diagnostics;
+using System.Threading;
 
 namespace DiscoBot
 {
@@ -29,6 +32,7 @@ namespace DiscoBot
         //List<string> afkList = new List<string>();
         List<ulong> afkList2 = new List<ulong>();
         List<ulong> afkServer = new List<ulong>();
+        List<string> afkText = new List<string>();
         string token = LoadToken();
         
         
@@ -39,14 +43,12 @@ namespace DiscoBot
             char prefix = ';';
 
             remPics = new string[] {
-                "Rem/rem1.gif",
-                "Rem/rem2.png",
-                "Rem/rem3.jpg",
-                "Rem/rem4.jpg",
-                "Rem/rem5.jpg",
-                "Rem/rem6.png",
-                "Rem/rem7.jpg",
-                "Rem/rem8.png",
+                "Rem/rem1.gif", "Rem/rem2.png", "Rem/rem3.jpg", "Rem/rem4.jpg", "Rem/rem5.jpg",
+                "Rem/rem6.png", "Rem/rem7.jpg", "Rem/rem8.png", "Rem/rem9.jpg", "Rem/rem10.png",
+                "Rem/rem11.jpg", "Rem/rem12.jpg", "Rem/rem13.jpg", "Rem/rem14.png", "Rem/rem15.jpg",
+                "Rem/rem16.jpg", "Rem/rem17.jpg", "Rem/rem18.jpg", "Rem/rem19.jpg", "Rem/rem20.png",
+                "Rem/rem21.png", "Rem/rem22.jpg"
+
             };
 
             freshestMemes = new string[]{
@@ -89,7 +91,12 @@ namespace DiscoBot
                     x.HelpMode = HelpMode.Public;
                 });
 
+
+
+
+
             commands = discord.GetService<CommandService>();
+
             RegisterMemeCommand();
             RegisterPurgeCommand();
             RegisterRemCommand();
@@ -103,6 +110,7 @@ namespace DiscoBot
 
             //Prefix TODO ;_;
             commands.CreateCommand("set_PREFIX")
+                .Hide()
                 .Parameter("prefix", ParameterType.Unparsed)
                 .Do(async (e) =>
                 {
@@ -126,6 +134,10 @@ namespace DiscoBot
             discord.ExecuteAndWait(async () =>
             {
                 await discord.Connect(token, TokenType.Bot); //REAL BOT
+                
+                
+                
+                
                 
                 
                 
@@ -163,9 +175,19 @@ namespace DiscoBot
 
                 }
             }*/
+            /*foreach (var m in e.Message.MentionedUsers)
+            {
+                Console.WriteLine("ID TEST: " + m.Id);
+                if (afkList2.Contains(m.Id))
+                {
+                    e.Channel.SendMessage("AFK");
+                }
+            }*/
             foreach (var m in e.Message.MentionedUsers){
                 Console.WriteLine("ID TEST: " + m.Id);
-                if(afkList2.Contains(m.Id)){
+                ulong userID = checkID(e.User.Mention, e.Server.Id);
+                if (afkServer.Contains(userID))
+                {
                     e.Channel.SendMessage("The Mentioned user is set AFK");
                 }
             }
@@ -256,6 +278,7 @@ namespace DiscoBot
         private void RegisterLastActiveCommand()
         {
             commands.CreateCommand("lastactive")
+                .Hide()
                 .Description("Doesnt do much yet...")
                 //.Parameter("name", ParameterType.Required)
                 .Do(async (e) =>
@@ -267,6 +290,7 @@ namespace DiscoBot
         private void RegisterSLCommand() 
         {
             commands.CreateCommand("save")
+                .Hide()
                 .Description("Saves the current Whitelist to a file so it can be loaded")
                 .Do(async (e) =>
                 {
@@ -288,6 +312,7 @@ namespace DiscoBot
                 });
 
             commands.CreateCommand("load")
+                .Hide()
                 .Description("Loads the current Whitelist from the file, overriding the whole active list!")
                 .Do(async (e) =>
                 {
@@ -336,6 +361,7 @@ namespace DiscoBot
         private void RegisterListCommand()
         {
             commands.CreateCommand("idList")
+                .Hide()
                 .Description("List of IDs on the Whitelist")
                 .Do(async (e) =>
                 {
@@ -355,6 +381,7 @@ namespace DiscoBot
 
 
             commands.CreateCommand("mentionList")
+                .Hide()
                 .Description("Dont use. Will get users to hate you...")
                 .Do(async (e) =>
                 {
@@ -373,6 +400,7 @@ namespace DiscoBot
                 });
 
             commands.CreateCommand("afkList")
+                .Hide()
                 .Description("ID list of all AFKs.")
                 .Do(async (e) =>
                 {
