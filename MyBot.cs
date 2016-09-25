@@ -150,7 +150,7 @@ namespace DiscoBot
         }
 
         private void initialLoad(){
-            string load = "C:\\Users\\Daniele\\OneDrive\\Dokumente\\GitHub\\Rem-Discord-Bot\\whitelist.txt";
+            string load = "config/whitelist.txt";
             StreamReader sr0 = new StreamReader(load);
             while (sr0.Peek() > -1)
             {
@@ -190,7 +190,7 @@ namespace DiscoBot
                 {
                     if (e.User.Id == mywhiteList[0])
                     {
-                        string save = "C:\\Users\\Daniele\\OneDrive\\Dokumente\\GitHub\\Rem-Discord-Bot\\whitelist.txt";
+                        string save = "config/whitelist.txt";
                         //mywhiteList.ForEach(Console.WriteLine);
                         //File.WriteAllLines(save, mywhiteList);
                         StreamWriter file = new System.IO.StreamWriter(save);
@@ -209,7 +209,7 @@ namespace DiscoBot
                 {
                     if (e.User.Id == mywhiteList[0])
                     {
-                        string load = "C:\\Users\\Daniele\\OneDrive\\Dokumente\\GitHub\\Rem-Discord-Bot\\whitelist.txt";
+                        string load = "config/whitelist.txt";
                         StreamReader sr1 = new StreamReader(load);
                         while (sr1.Peek() > -1)
                         {
@@ -239,7 +239,7 @@ namespace DiscoBot
 
         private static string LoadToken()
         {
-            string load = "C:\\Users\\Daniele\\OneDrive\\Dokumente\\GitHub\\Rem-Discord-Bot\\config.txt";
+            string load = "config/config.txt";
             StreamReader sr1 = new StreamReader(load);
             string temp = sr1.ReadLine();
             return temp;
