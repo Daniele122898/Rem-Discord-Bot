@@ -25,6 +25,8 @@ namespace DiscoBot
 
         //ArrayList myWhite = new ArrayList();
         List<ulong> mywhiteList = new List<ulong>();
+        //List<string> afkList = new List<string>();
+        List<ulong> afkList2 = new List<ulong>();
         string token = LoadToken();
         
         
@@ -32,7 +34,7 @@ namespace DiscoBot
         public MyBot()
         {
             rand = new Random();
-            char prefix = ';';
+            char prefix = '+';
 
             remPics = new string[] {
                 "Rem/rem1.gif",
@@ -76,6 +78,8 @@ namespace DiscoBot
 
             
 
+            
+
             discord.UsingCommands(x =>
                 {
                     x.PrefixChar = prefix;
@@ -91,6 +95,8 @@ namespace DiscoBot
             RegisterListCommand();
             RegisterSLCommand();
             RegisterLastActiveCommand();
+            RegisterAFKCommand();
+            //RegisterAFKCommand2();
 
             //Prefix TODO ;_;
             commands.CreateCommand("set_PREFIX")
@@ -115,7 +121,8 @@ namespace DiscoBot
 
             discord.ExecuteAndWait(async () =>
             {
-                await discord.Connect(token, TokenType.Bot);
+                await discord.Connect(token, TokenType.Bot); //REAL BOT
+                
             });
 
         }
@@ -138,15 +145,40 @@ namespace DiscoBot
             {
                 e.Channel.SendFile("memes/feelsbadman.png");
             }
-             /*
-            switch (message)
-            {
-                case "fp":
-                case "-fp-":
-                    e.Channel.SendFile("memes/facepalm.png");
-                    break;
+            /*for(int i = 0; i < afkList.Count; i++){
+               if (e.Message.RawText.Contains(afkList[i]))
+                {
+                    if (!e.Message.IsAuthor)
+                    {
+                        e.Channel.SendMessage("User " + afkList[i] + " is AFK");
+                    }
 
+                }
             }*/
+            foreach (var m in e.Message.MentionedUsers){
+                Console.WriteLine("ID TEST: " + m.Id);
+                if(afkList2.Contains(m.Id)){
+                    e.Channel.SendMessage("The Mentioned user is set AFK");
+                }
+            }
+            /*if (e.Message.RawText.Contains(afkList[i]))
+            {
+                if (!e.Message.IsAuthor)
+                {
+                    e.Channel.SendMessage("User " + afkList[i] + " is AFK");
+                }
+
+            }
+        }*/
+            /*
+           switch (message)
+           {
+               case "fp":
+               case "-fp-":
+                   e.Channel.SendFile("memes/facepalm.png");
+                   break;
+
+           }*/
         }
 
         private void initialLoad(){
@@ -237,6 +269,8 @@ namespace DiscoBot
                 });
         }
 
+
+
         private static string LoadToken()
         {
             string load = "config/config.txt";
@@ -280,6 +314,81 @@ namespace DiscoBot
                     }
                 });
 
+            commands.CreateCommand("afkList")
+                .Do(async (e) =>
+                {
+                    if (mywhiteList.IndexOf(e.User.Id) >= 0)
+                    {
+                        for (int i = 0; i < afkList2.Count; i++)
+                        {
+                            await e.Channel.SendMessage("UserID: " +afkList2[i]);
+                        }
+                    }
+                    else
+                    {
+                        await e.Channel.SendMessage("You do not have Permission to use this command!");
+                    }
+                });
+
+        }
+
+       /* private void RegisterAFKCommand2()
+        {
+            commands.CreateCommand("afk2")
+                .Do(async (e) =>
+                {
+
+                    string nameofUser = e.User.Mention;
+                    if (afkList.IndexOf(nameofUser) < 0)
+                    {
+                        afkList.Add(nameofUser);
+                        await e.Channel.SendMessage("You are set AFK");
+                    }
+                    else
+                    {
+                        afkList.Remove(nameofUser);
+                        await e.Channel.SendMessage("You are no longer AFK");
+                    }
+                    for (int i = 0; i < afkList.Count; i++)
+                    {
+                        Console.WriteLine("AFK " + i + ": " + afkList[i]);
+                    }
+                });
+        }*/
+
+        private void RegisterAFKCommand()
+        {
+            commands.CreateCommand("afk")
+                .Do(async (e) =>
+                {
+
+                    string nameofUser = e.User.Mention;
+                    int length = nameofUser.Length - 3;
+                    string UserIDs = nameofUser.Substring(2, length);
+                    ulong UserID = 0;
+                    if (UInt64.TryParse(UserIDs, out UserID))
+                    {
+                        if (afkList2.IndexOf(UserID) < 0)
+                        {
+                            afkList2.Add(UserID);
+                            await e.Channel.SendMessage("You are set AFK");
+                        }
+                        else
+                        {
+                            afkList2.Remove(UserID);
+                            await e.Channel.SendMessage("You are no longer AFK");
+                        }
+                        for (int i = 0; i < afkList2.Count; i++)
+                        {
+                            Console.WriteLine("AFK " + i + ": " + afkList2[i]);
+                        }
+                    }
+                    else
+                    {
+                        await e.Channel.SendMessage("Failed to set AFK state");
+                    }
+                    
+                });
         }
 
 
