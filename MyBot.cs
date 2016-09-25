@@ -34,7 +34,7 @@ namespace DiscoBot
         public MyBot()
         {
             rand = new Random();
-            char prefix = '+';
+            char prefix = ';';
 
             remPics = new string[] {
                 "Rem/rem1.gif",
@@ -123,6 +123,8 @@ namespace DiscoBot
             {
                 await discord.Connect(token, TokenType.Bot); //REAL BOT
                 
+
+                
             });
 
         }
@@ -208,6 +210,7 @@ namespace DiscoBot
         private void RegisterLastActiveCommand()
         {
             commands.CreateCommand("lastactive")
+                .Description("Doesnt do much yet...")
                 //.Parameter("name", ParameterType.Required)
                 .Do(async (e) =>
                 {
@@ -218,6 +221,7 @@ namespace DiscoBot
         private void RegisterSLCommand() 
         {
             commands.CreateCommand("save")
+                .Description("Saves the current Whitelist to a file so it can be loaded")
                 .Do(async (e) =>
                 {
                     if (e.User.Id == mywhiteList[0])
@@ -237,6 +241,7 @@ namespace DiscoBot
                 });
 
             commands.CreateCommand("load")
+                .Description("Loads the current Whitelist from the file, overriding the whole active list!")
                 .Do(async (e) =>
                 {
                     if (e.User.Id == mywhiteList[0])
@@ -283,6 +288,7 @@ namespace DiscoBot
         private void RegisterListCommand()
         {
             commands.CreateCommand("idList")
+                .Description("List of IDs on the Whitelist")
                 .Do(async (e) =>
                 {
                     if (mywhiteList.IndexOf(e.User.Id) >= 0)
@@ -299,6 +305,7 @@ namespace DiscoBot
                 });
 
             commands.CreateCommand("mentionList")
+                .Description("Dont use. Will get users to hate you...")
                 .Do(async (e) =>
                 {
                     if (mywhiteList.IndexOf(e.User.Id) >= 0)
@@ -315,6 +322,7 @@ namespace DiscoBot
                 });
 
             commands.CreateCommand("afkList")
+                .Description("ID list of all AFKs.")
                 .Do(async (e) =>
                 {
                     if (mywhiteList.IndexOf(e.User.Id) >= 0)
@@ -359,6 +367,7 @@ namespace DiscoBot
         private void RegisterAFKCommand()
         {
             commands.CreateCommand("afk")
+                .Description("If you are not yet set AFK the command will set you AFK so that every user gets a response from Rem when mentioning you. Triggering the command again will remove the AFK status.")
                 .Do(async (e) =>
                 {
 
@@ -395,6 +404,7 @@ namespace DiscoBot
         private void RegisterWhitelistcommand()
         {
             commands.CreateCommand("whitelist")
+                .Description("A whitelisted user can Whitelist other users.")
                 .Parameter("name", ParameterType.Required)
                 .Do(async (e) =>
                 {
