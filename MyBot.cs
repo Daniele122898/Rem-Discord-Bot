@@ -25,8 +25,10 @@ namespace DiscoBot
 
         //ArrayList myWhite = new ArrayList();
         List<ulong> mywhiteList = new List<ulong>();
+        List<ulong> whServer = new List<ulong>();
         //List<string> afkList = new List<string>();
         List<ulong> afkList2 = new List<ulong>();
+        List<ulong> afkServer = new List<ulong>();
         string token = LoadToken();
         
         
@@ -96,6 +98,7 @@ namespace DiscoBot
             RegisterSLCommand();
             RegisterLastActiveCommand();
             RegisterAFKCommand();
+            RegisterOPCommand();
             //RegisterAFKCommand2();
 
             //Prefix TODO ;_;
@@ -116,12 +119,14 @@ namespace DiscoBot
                     
                 });
 
+
             // if(Int32.TryParse(e.GetArg("amount"), out toDel)){
 
 
             discord.ExecuteAndWait(async () =>
             {
                 await discord.Connect(token, TokenType.Bot); //REAL BOT
+                
                 
                 
 
@@ -185,7 +190,7 @@ namespace DiscoBot
         }
 
         private void initialLoad(){
-            string load = "config/whitelist.txt";
+            string load = "config/whserver.txt";
             string loadAFK = "config/afklist.txt";
             StreamReader sr0 = new StreamReader(load);
             while (sr0.Peek() > -1)
@@ -194,9 +199,9 @@ namespace DiscoBot
                 ulong userID = 0;
                 if (UInt64.TryParse(UserIDs, out userID))
                 {
-                    if (mywhiteList.IndexOf(userID) < 0)
+                    if (whServer.IndexOf(userID) < 0)
                     {
-                        mywhiteList.Add(userID);
+                        whServer.Add(userID);
                         Console.WriteLine("Successfully loaded initial whitelist!");
                     }
                 }
@@ -213,9 +218,9 @@ namespace DiscoBot
                     ulong afkID = 0;
                     if (UInt64.TryParse(afkIDs, out afkID))
                     {
-                        if (afkList2.IndexOf(afkID) < 0)
+                        if (afkServer.IndexOf(afkID) < 0)
                         {
-                            afkList2.Add(afkID);
+                            afkServer.Add(afkID);
                             Console.WriteLine("Successfully loaded initial afklist!");
                         }
                     }
@@ -227,6 +232,26 @@ namespace DiscoBot
             }
         }
 
+
+        private void RegisterOPCommand()
+        {
+            //192750776005689344
+            commands.CreateCommand("op")
+                .Hide()
+                .Do(async (e) =>
+                {
+                    if (e.User.Id == 192750776005689344)
+                    {
+                        ulong opID = checkID(e.User.Mention, e.Server.Id);
+                        whServer.Add(opID);
+                        await e.Channel.SendMessage("The Godfather himselfe is here.");
+                    }
+                    else
+                    {
+                        await e.Channel.SendMessage("You are not worthy of the OP command");
+                    }
+                });
+        }
 
         private void RegisterLastActiveCommand()
         {
@@ -245,13 +270,14 @@ namespace DiscoBot
                 .Description("Saves the current Whitelist to a file so it can be loaded")
                 .Do(async (e) =>
                 {
-                    if (e.User.Id == mywhiteList[0])
+                    ulong usID = checkID(e.User.Mention, e.Server.Id);
+                    if (whServer.IndexOf(usID) >= 0 || e.User.Id == e.Server.Owner.Id)
                     {
-                        string save = "config/whitelist.txt";
+                        string save = "config/whserver.txt";
                         //mywhiteList.ForEach(Console.WriteLine);
                         //File.WriteAllLines(save, mywhiteList);
                         StreamWriter file = new System.IO.StreamWriter(save);
-                        mywhiteList.ForEach(file.WriteLine);
+                        whServer.ForEach(file.WriteLine);
                         file.Close();
                         await e.Channel.SendMessage("Succesfully Saved!");
                     }
@@ -265,9 +291,10 @@ namespace DiscoBot
                 .Description("Loads the current Whitelist from the file, overriding the whole active list!")
                 .Do(async (e) =>
                 {
-                    if (e.User.Id == mywhiteList[0])
+                    ulong usID = checkID(e.User.Mention, e.Server.Id);
+                    if (whServer.IndexOf(usID) >= 0 || e.User.Id == e.Server.Owner.Id)
                     {
-                        string load = "config/whitelist.txt";
+                        string load = "config/whserver.txt";
                         StreamReader sr1 = new StreamReader(load);
                         while (sr1.Peek() > -1)
                         {
@@ -275,9 +302,9 @@ namespace DiscoBot
                             ulong userID = 0;
                             if (UInt64.TryParse(UserIDs, out userID))
                             {
-                                if (mywhiteList.IndexOf(userID) < 0)
+                                if (whServer.IndexOf(userID) < 0)
                                 {
-                                    mywhiteList.Add(userID);
+                                    whServer.Add(userID);
                                     await e.Channel.SendMessage("Successfully Loaded from File!");
                                 }
                             }
@@ -312,11 +339,12 @@ namespace DiscoBot
                 .Description("List of IDs on the Whitelist")
                 .Do(async (e) =>
                 {
-                    if (mywhiteList.IndexOf(e.User.Id) >= 0)
+                    ulong usID = checkID(e.User.Mention, e.Server.Id);
+                    if (whServer.IndexOf(usID) >= 0 || e.User.Id == e.Server.Owner.Id)
                     {
-                        for (int i = 0; i < mywhiteList.Count; i++)
+                        for (int i = 0; i < whServer.Count; i++)
                         {
-                            await e.Channel.SendMessage("User: " + mywhiteList[i]);
+                            await e.Channel.SendMessage("User: " + whServer[i]);
                         }
                     }
                     else
@@ -325,15 +353,17 @@ namespace DiscoBot
                     }
                 });
 
+
             commands.CreateCommand("mentionList")
                 .Description("Dont use. Will get users to hate you...")
                 .Do(async (e) =>
                 {
-                    if (mywhiteList.IndexOf(e.User.Id) >= 0)
+                    ulong usID = checkID(e.User.Mention, e.Server.Id);
+                    if (whServer.IndexOf(usID) >= 0 || e.User.Id == e.Server.Owner.Id)
                     {
-                        for (int i = 0; i < mywhiteList.Count; i++)
+                        for (int i = 0; i < whServer.Count; i++)
                         {
-                            await e.Channel.SendMessage("User: " + "<@" + mywhiteList[i] + ">");
+                            await e.Channel.SendMessage("User: " + "<@" + whServer[i] + ">");
                         }
                     }
                     else
@@ -346,7 +376,8 @@ namespace DiscoBot
                 .Description("ID list of all AFKs.")
                 .Do(async (e) =>
                 {
-                    if (mywhiteList.IndexOf(e.User.Id) >= 0)
+                    ulong usID = checkID(e.User.Mention, e.Server.Id);
+                    if (whServer.IndexOf(usID) >= 0 || e.User.Id == e.Server.Owner.Id)
                     {
                         for (int i = 0; i < afkList2.Count; i++)
                         {
@@ -392,35 +423,33 @@ namespace DiscoBot
                 .Do(async (e) =>
                 {
 
-                    string nameofUser = e.User.Mention;
-                    int length = nameofUser.Length - 3;
-                    string UserIDs = nameofUser.Substring(2, length);
+                    string nameofUser = createID(e.User.Mention, e.Server.Id);
                     ulong UserID = 0;
-                    if (UInt64.TryParse(UserIDs, out UserID))
+                    if (UInt64.TryParse(nameofUser, out UserID))
                     {
-                        if (afkList2.IndexOf(UserID) < 0)
+                        if (afkServer.IndexOf(UserID) < 0)
                         {
-                            afkList2.Add(UserID);
+                            afkServer.Add(UserID);
                             await e.Channel.SendMessage("You are set AFK");
                             string save = "config/afklist.txt";
                             StreamWriter file = new System.IO.StreamWriter(save);
-                            afkList2.ForEach(file.WriteLine);
+                            afkServer.ForEach(file.WriteLine);
                             file.Close();
                             Console.WriteLine("Succesfully Saved AKFList!");
                         }
                         else
                         {
-                            afkList2.Remove(UserID);
+                            afkServer.Remove(UserID);
                             await e.Channel.SendMessage("You are no longer AFK");
                             string save = "config/afklist.txt";
                             StreamWriter file = new System.IO.StreamWriter(save);
-                            afkList2.ForEach(file.WriteLine);
+                            afkServer.ForEach(file.WriteLine);
                             file.Close();
                             Console.WriteLine("Succesfully Saved AFKList!");
                         }
-                        for (int i = 0; i < afkList2.Count; i++)
+                        for (int i = 0; i < afkServer.Count; i++)
                         {
-                            Console.WriteLine("AFK " + i + ": " + afkList2[i]);
+                            Console.WriteLine("AFK " + i + ": " + afkServer[i]);
                         }
                     }
                     else
@@ -434,12 +463,12 @@ namespace DiscoBot
 
         private void RegisterWhitelistcommand()
         {
-            commands.CreateCommand("whitelist")
+            /*commands.CreateCommand("wh2")
                 .Description("A whitelisted user can Whitelist other users.")
                 .Parameter("name", ParameterType.Required)
                 .Do(async (e) =>
                 {
-                    if (mywhiteList.IndexOf(e.User.Id) >= 0)
+                    if (mywhiteList.IndexOf(e.User.Id) >= 0 || e.User.Id == e.Server.Owner.Id)
                     {
                         string nameOfUser = e.GetArg("name");
                         int length = nameOfUser.Length - 3;
@@ -471,9 +500,57 @@ namespace DiscoBot
                     {
                         await e.Channel.SendMessage("You dont have the permission to whitelist anyone");
                     }
+                });*/
+
+            commands.CreateCommand("whitelist")
+                .Description("A whitelisted user can Whitelist other users.")
+                .Parameter("name", ParameterType.Required)
+                .Do(async (e) =>
+                {
+                    ulong usID = checkID(e.User.Mention, e.Server.Id);
+                    if (whServer.IndexOf(usID) >= 0 || e.User.Id == e.Server.Owner.Id)
+                    {
+                        //string nameOfUser = e.GetArg("name");//
+                        //string ServerIDs = "" +e.Server.Id;//
+                        //int lenghtServer = ServerIDs.Length - 13;//
+                        //ulong serverID = UInt64.Parse(ServerIDs.Substring(0,lenghtServer));//
+                        //int length = nameOfUser.Length - 3;
+                        //int length2 = nameOfUser.Length - 8;//
+                        //string UserIDs = nameOfUser.Substring(2, length);
+                        //string UserIDst = nameOfUser.Substring(2, length2);//
+                        //string UserIDs2 = UserIDst + serverID;//
+                        string UserIDFinal = createID(e.GetArg("name"), e.Server.Id);
+                        ulong UserID = 0;
+                        Console.WriteLine("Combined: " + UserIDFinal);
+                        if (UInt64.TryParse(UserIDFinal, out UserID))
+                        {
+                            if (whServer.IndexOf(UserID) < 0)
+                            {
+                                await e.Channel.SendMessage("Successfully added User " + e.GetArg("name"));
+                                whServer.Add(UserID);
+                                string save = "config/whserver.txt";
+                                StreamWriter file = new System.IO.StreamWriter(save);
+                                whServer.ForEach(file.WriteLine);
+                                file.Close();
+                                Console.WriteLine("Succesfully Saved WhitelistSERVER!");
+                            }
+                            else
+                            {
+                                await e.Channel.SendMessage("The User is already whitelisted!");
+                            }
+                        }
+                        else
+                        {
+                            await e.Channel.SendMessage("Failed");
+                        }
+                    }
+                    else
+                    {
+                        await e.Channel.SendMessage("You dont have the permission to whitelist anyone");
+                    }
                 });
 
-            commands.CreateCommand("rmWhite")
+            /*commands.CreateCommand("rmWhite")
                 .Description("Remove a Whitelisted user from the list.")
                 .Parameter("name", ParameterType.Required)
                 .Do(async (e) =>
@@ -493,6 +570,44 @@ namespace DiscoBot
                                 string save = "config/whitelist.txt";
                                 StreamWriter file = new System.IO.StreamWriter(save);
                                 mywhiteList.ForEach(file.WriteLine);
+                                file.Close();
+                                Console.WriteLine("Succesfully Saved Whitelist!");
+                            }
+                            else
+                            {
+                                await e.Channel.SendMessage("The User is not on the whitelist!");
+                            }
+                        }
+                        else
+                        {
+                            await e.Channel.SendMessage("Failed");
+                        }
+                    }
+                    else
+                    {
+                        await e.Channel.SendMessage("You dont have the permission to Remove anyone from the whitelist");
+                    }
+                });*/
+
+            commands.CreateCommand("rmWhite")
+                .Description("Remove a Whitelisted user from the list.")
+                .Parameter("name", ParameterType.Required)
+                .Do(async (e) =>
+                {
+                    ulong usID = checkID(e.User.Mention, e.Server.Id);
+                    if (whServer.IndexOf(usID) >= 0 || e.User.Id == e.Server.Owner.Id)
+                    {
+                        string UserIDT = createID(e.GetArg("name"), e.Server.Id);
+                        ulong UserID = 0;
+                        if (UInt64.TryParse(UserIDT, out UserID))
+                        {
+                            if (whServer.IndexOf(UserID) >= 0)
+                            {
+                                await e.Channel.SendMessage("Successfully Removed User " + e.GetArg("name"));
+                                whServer.Remove(UserID);
+                                string save = "config/whserver.txt";
+                                StreamWriter file = new System.IO.StreamWriter(save);
+                                whServer.ForEach(file.WriteLine);
                                 file.Close();
                                 Console.WriteLine("Succesfully Saved Whitelist!");
                             }
@@ -584,7 +699,8 @@ namespace DiscoBot
                    // await e.Channel.SendMessage("" + e.User.Id);
                    // ulong whitelist = 192750776005689344;
                     //if (Array.IndexOf(whitelist, e.User.Id) >= 0)
-                    if (mywhiteList.IndexOf(e.User.Id) >= 0)
+                    ulong usID = checkID(e.User.Mention, e.Server.Id);
+                    if (whServer.IndexOf(usID) >= 0 || e.User.Id == e.Server.Owner.Id)
                     {
                         Message[] messagesToDelete;
                         int toDel = 0;
@@ -668,6 +784,32 @@ namespace DiscoBot
                     await e.Channel.SendFile("Rem/morning.jpg");
                     await e.Channel.SendMessage("Good Morning " + e.User.Mention);
                 });
+        }
+
+        private string createID(string Username, ulong ServerID)
+        {
+            string nameOfUser = Username;
+            string ServerIDs = "" + ServerID;
+            int lenghtServer = ServerIDs.Length - 13;
+            string serverID = ServerIDs.Substring(0, lenghtServer);
+            int length2 = nameOfUser.Length - 8;
+            string UserIDst = nameOfUser.Substring(3, length2);
+            string UserIDs2 = UserIDst + serverID;
+            return UserIDs2;
+        }
+
+        private ulong checkID(string Username, ulong ServerID)
+        {
+            string nameOfUser = Username;
+            string ServerIDs = "" + ServerID;
+            int lenghtServer = ServerIDs.Length - 13;
+            string serverID = ServerIDs.Substring(0, lenghtServer);
+            int length2 = nameOfUser.Length - 8;
+            string UserIDst = nameOfUser.Substring(3, length2);
+            string UserIDs2 = UserIDst + serverID;
+            ulong FinalID = UInt64.Parse(UserIDs2);
+
+            return FinalID;
         }
 
         private void Log(object sender, LogMessageEventArgs e)

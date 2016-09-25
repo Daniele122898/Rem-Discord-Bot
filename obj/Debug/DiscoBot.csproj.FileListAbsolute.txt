@@ -95,3 +95,4 @@ C:\Users\Daniele\OneDrive\Dokumente\GitHub\Rem-Discord-Bot\bin\Debug\Discord.Net
 C:\Users\Daniele\OneDrive\Dokumente\GitHub\Rem-Discord-Bot\bin\Debug\config\config.txt
 C:\Users\Daniele\OneDrive\Dokumente\GitHub\Rem-Discord-Bot\bin\Debug\config\whitelist.txt
 C:\Users\Daniele\OneDrive\Dokumente\GitHub\Rem-Discord-Bot\bin\Debug\config\afklist.txt
+C:\Users\Daniele\OneDrive\Dokumente\GitHub\Rem-Discord-Bot\bin\Debug\config\whserver.txt
