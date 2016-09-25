@@ -91,3 +91,4 @@ C:\Users\Daniele\OneDrive\Dokumente\GitHub\Rem-Discord-Bot\bin\Debug\Nito.AsyncE
 C:\Users\Daniele\OneDrive\Dokumente\GitHub\Rem-Discord-Bot\bin\Debug\Nito.AsyncEx.Enlightenment.xml
 C:\Users\Daniele\OneDrive\Dokumente\GitHub\Rem-Discord-Bot\bin\Debug\RestSharp.xml
 C:\Users\Daniele\OneDrive\Dokumente\GitHub\Rem-Discord-Bot\obj\Debug\DiscoBot.csprojResolveAssemblyReference.cache
+C:\Users\Daniele\OneDrive\Dokumente\GitHub\Rem-Discord-Bot\bin\Debug\Discord.Net.Modules.dll

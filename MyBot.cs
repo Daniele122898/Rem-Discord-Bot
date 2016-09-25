@@ -61,6 +61,7 @@ namespace DiscoBot
  
             //myWhite.Add(192750776005689344);
             mywhiteList.Add(192750776005689344);
+            initialLoad();
             //File.WriteAllLines(@"C:\Users\Daniele\OneDrive\Dokumente\RemBot\DiscoBot\whitelist.txt", myWhite.Cast<string>());
             
 
@@ -89,6 +90,7 @@ namespace DiscoBot
             RegisterWhitelistcommand();
             RegisterListCommand();
             RegisterSLCommand();
+            RegisterLastActiveCommand();
 
             //Prefix TODO ;_;
             commands.CreateCommand("set_PREFIX")
@@ -147,6 +149,39 @@ namespace DiscoBot
             }*/
         }
 
+        private void initialLoad(){
+            string load = "C:\\Users\\Daniele\\OneDrive\\Dokumente\\GitHub\\Rem-Discord-Bot\\whitelist.txt";
+            StreamReader sr0 = new StreamReader(load);
+            while (sr0.Peek() > -1)
+            {
+                string UserIDs = sr0.ReadLine();
+                ulong userID = 0;
+                if (UInt64.TryParse(UserIDs, out userID))
+                {
+                    if (mywhiteList.IndexOf(userID) < 0)
+                    {
+                        mywhiteList.Add(userID);
+                        Console.WriteLine("Successfully loaded initial whitelist!");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Failed to Initially Load Whitelist!");
+                }
+
+            }
+        }
+
+
+        private void RegisterLastActiveCommand()
+        {
+            commands.CreateCommand("lastactive")
+                //.Parameter("name", ParameterType.Required)
+                .Do(async (e) =>
+                {
+                    await e.Channel.SendMessage("Last Active UTC: " + e.User.LastActivityAt);
+                });
+        }
 
         private void RegisterSLCommand() 
         {
