@@ -123,6 +123,7 @@ namespace DiscoBot
             {
                 await discord.Connect(token, TokenType.Bot); //REAL BOT
                 
+                
 
                 
             });
@@ -185,6 +186,7 @@ namespace DiscoBot
 
         private void initialLoad(){
             string load = "config/whitelist.txt";
+            string loadAFK = "config/afklist.txt";
             StreamReader sr0 = new StreamReader(load);
             while (sr0.Peek() > -1)
             {
@@ -202,6 +204,25 @@ namespace DiscoBot
                 {
                     Console.WriteLine("Failed to Initially Load Whitelist!");
                 }
+
+            }
+            StreamReader sr1 = new StreamReader(loadAFK);
+            while (sr1.Peek() > -1)
+                {
+                    string afkIDs = sr1.ReadLine();
+                    ulong afkID = 0;
+                    if (UInt64.TryParse(afkIDs, out afkID))
+                    {
+                        if (afkList2.IndexOf(afkID) < 0)
+                        {
+                            afkList2.Add(afkID);
+                            Console.WriteLine("Successfully loaded initial afklist!");
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("Failed to Initially Load afklist!");
+                    }
 
             }
         }
@@ -381,11 +402,21 @@ namespace DiscoBot
                         {
                             afkList2.Add(UserID);
                             await e.Channel.SendMessage("You are set AFK");
+                            string save = "config/afklist.txt";
+                            StreamWriter file = new System.IO.StreamWriter(save);
+                            afkList2.ForEach(file.WriteLine);
+                            file.Close();
+                            Console.WriteLine("Succesfully Saved AKFList!");
                         }
                         else
                         {
                             afkList2.Remove(UserID);
                             await e.Channel.SendMessage("You are no longer AFK");
+                            string save = "config/afklist.txt";
+                            StreamWriter file = new System.IO.StreamWriter(save);
+                            afkList2.ForEach(file.WriteLine);
+                            file.Close();
+                            Console.WriteLine("Succesfully Saved AFKList!");
                         }
                         for (int i = 0; i < afkList2.Count; i++)
                         {
@@ -408,8 +439,6 @@ namespace DiscoBot
                 .Parameter("name", ParameterType.Required)
                 .Do(async (e) =>
                 {
-
-                    //if (myWhite.IndexOf(e.User.Id) >= 0)
                     if (mywhiteList.IndexOf(e.User.Id) >= 0)
                     {
                         string nameOfUser = e.GetArg("name");
@@ -422,10 +451,15 @@ namespace DiscoBot
                             {
                                 await e.Channel.SendMessage("Successfully added User " + e.GetArg("name"));
                                 mywhiteList.Add(UserID);
+                                string save = "config/whitelist.txt";
+                                StreamWriter file = new System.IO.StreamWriter(save);
+                                mywhiteList.ForEach(file.WriteLine);
+                                file.Close();
+                                Console.WriteLine("Succesfully Saved Whitelist!");
                             }
                             else
                             {
-                                await e.Channel.SendMessage("User " + nameOfUser + " is already whitelisted!");
+                                await e.Channel.SendMessage("The User is already whitelisted!");
                             }
                         }
                         else
@@ -436,6 +470,45 @@ namespace DiscoBot
                     else
                     {
                         await e.Channel.SendMessage("You dont have the permission to whitelist anyone");
+                    }
+                });
+
+            commands.CreateCommand("rmWhite")
+                .Description("Remove a Whitelisted user from the list.")
+                .Parameter("name", ParameterType.Required)
+                .Do(async (e) =>
+                {
+                    if (mywhiteList.IndexOf(e.User.Id) >= 0)
+                    {
+                        string nameOfUser = e.GetArg("name");
+                        int length = nameOfUser.Length - 3;
+                        string UserIDs = nameOfUser.Substring(2, length);
+                        ulong UserID = 0;
+                        if (UInt64.TryParse(UserIDs, out UserID))
+                        {
+                            if (mywhiteList.IndexOf(UserID) >= 0)
+                            {
+                                await e.Channel.SendMessage("Successfully Removed User " + e.GetArg("name"));
+                                mywhiteList.Remove(UserID);
+                                string save = "config/whitelist.txt";
+                                StreamWriter file = new System.IO.StreamWriter(save);
+                                mywhiteList.ForEach(file.WriteLine);
+                                file.Close();
+                                Console.WriteLine("Succesfully Saved Whitelist!");
+                            }
+                            else
+                            {
+                                await e.Channel.SendMessage("The User is not on the whitelist!");
+                            }
+                        }
+                        else
+                        {
+                            await e.Channel.SendMessage("Failed");
+                        }
+                    }
+                    else
+                    {
+                        await e.Channel.SendMessage("You dont have the permission to Remove anyone from the whitelist");
                     }
                 });
         }

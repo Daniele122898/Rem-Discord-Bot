@@ -67,3 +67,4 @@ C:\Users\Daniele\OneDrive\Dokumente\GitHub\Rem-Discord-Bot\bin\Release\Nito.Asyn
 C:\Users\Daniele\OneDrive\Dokumente\GitHub\Rem-Discord-Bot\bin\Release\Nito.AsyncEx.Concurrent.xml
 C:\Users\Daniele\OneDrive\Dokumente\GitHub\Rem-Discord-Bot\bin\Release\Nito.AsyncEx.Enlightenment.xml
 C:\Users\Daniele\OneDrive\Dokumente\GitHub\Rem-Discord-Bot\bin\Release\RestSharp.xml
+C:\Users\Daniele\OneDrive\Dokumente\GitHub\Rem-Discord-Bot\bin\Release\config\afklist.txt

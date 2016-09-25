@@ -94,3 +94,4 @@ C:\Users\Daniele\OneDrive\Dokumente\GitHub\Rem-Discord-Bot\obj\Debug\DiscoBot.cs
 C:\Users\Daniele\OneDrive\Dokumente\GitHub\Rem-Discord-Bot\bin\Debug\Discord.Net.Modules.dll
 C:\Users\Daniele\OneDrive\Dokumente\GitHub\Rem-Discord-Bot\bin\Debug\config\config.txt
 C:\Users\Daniele\OneDrive\Dokumente\GitHub\Rem-Discord-Bot\bin\Debug\config\whitelist.txt
+C:\Users\Daniele\OneDrive\Dokumente\GitHub\Rem-Discord-Bot\bin\Debug\config\afklist.txt
