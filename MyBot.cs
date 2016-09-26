@@ -40,7 +40,7 @@ namespace DiscoBot
         public MyBot()
         {
             rand = new Random();
-            char prefix = ';';
+            char prefix = '+';
 
             remPics = new string[] {
                 "Rem/rem1.gif", "Rem/rem2.png", "Rem/rem3.jpg", "Rem/rem4.jpg", "Rem/rem5.jpg",
@@ -74,6 +74,7 @@ namespace DiscoBot
 
             discord = new DiscordClient(x =>
             {
+                x.AppName = "Rem";
                 x.LogLevel = LogSeverity.Info;
                 x.LogHandler = Log;
             });
@@ -131,18 +132,29 @@ namespace DiscoBot
             // if(Int32.TryParse(e.GetArg("amount"), out toDel)){
 
 
+            /*discord.ExecuteAndWait(async () =>
+            {
+                //await discord.Connect(token, TokenType.Bot); //REAL BOT
+                await discord.Connect("MjI5MDAwOTQ2MTk2MjgzMzky.CskvdA.ZfKbgo_nKJNkHcTKiWGbyYYx_rY", TokenType.Bot);//TESTBOT    
+            });*/
+
             discord.ExecuteAndWait(async () =>
             {
-                await discord.Connect(token, TokenType.Bot); //REAL BOT
-                
-                
-                
-                
-                
-                
-                
+                while (true)
+                {
+                    try
+                    {
+                        //await discord.Connect(token, TokenType.Bot);//REAL BOT
+                        await discord.Connect("MjI5MDAwOTQ2MTk2MjgzMzky.CskvdA.ZfKbgo_nKJNkHcTKiWGbyYYx_rY", TokenType.Bot);//TESTBOT   
 
-                
+                        break;
+                    }
+                    catch (Exception ex)
+                    {
+                        discord.Log.Error("Login Failed", ex);
+                        await Task.Delay(discord.Config.FailedReconnectDelay);
+                    }
+                }
             });
 
         }
@@ -183,11 +195,16 @@ namespace DiscoBot
                     e.Channel.SendMessage("AFK");
                 }
             }*/
-            foreach (var m in e.Message.MentionedUsers){
-                Console.WriteLine("ID TEST: " + m.Id);
-                ulong userID = checkID(e.User.Mention, e.Server.Id);
+            foreach (var m in e.Message.MentionedUsers)
+            {
+                Console.WriteLine("ID of Sender: " + m.Id);
+                string mentionedName = "++" + m.Id;
+               
+                ulong userID = mentionID(mentionedName, e.Server.Id);
+                Console.WriteLine("ID MENTION: " + userID);
                 if (afkServer.Contains(userID))
                 {
+
                     e.Channel.SendMessage("The Mentioned user is set AFK");
                 }
             }
@@ -368,6 +385,7 @@ namespace DiscoBot
                     ulong usID = checkID(e.User.Mention, e.Server.Id);
                     if (whServer.IndexOf(usID) >= 0 || e.User.Id == e.Server.Owner.Id)
                     {
+
                         for (int i = 0; i < whServer.Count; i++)
                         {
                             await e.Channel.SendMessage("User: " + whServer[i]);
@@ -377,6 +395,7 @@ namespace DiscoBot
                     {
                         await e.Channel.SendMessage("You do not have Permission to use this command!");
                     }
+                    
                 });
 
 
@@ -407,9 +426,9 @@ namespace DiscoBot
                     ulong usID = checkID(e.User.Mention, e.Server.Id);
                     if (whServer.IndexOf(usID) >= 0 || e.User.Id == e.Server.Owner.Id)
                     {
-                        for (int i = 0; i < afkList2.Count; i++)
+                        for (int i = 0; i < afkServer.Count; i++)
                         {
-                            await e.Channel.SendMessage("UserID: " +afkList2[i]);
+                            await e.Channel.SendMessage("UserID: " + afkServer[i]);
                         }
                     }
                     else
@@ -840,9 +859,23 @@ namespace DiscoBot
             return FinalID;
         }
 
+        private ulong mentionID(string Username, ulong ServerID)
+        {
+            string nameOfUser = Username;
+            string ServerIDs = "" + ServerID;
+            int lenghtServer = ServerIDs.Length - 13;
+            string serverID = ServerIDs.Substring(0, lenghtServer);
+            int length2 = nameOfUser.Length - 7;
+            string UserIDst = nameOfUser.Substring(3, length2);
+            string UserIDs2 = UserIDst + serverID;
+            ulong FinalID = UInt64.Parse(UserIDs2);
+
+            return FinalID;
+        }
+
         private void Log(object sender, LogMessageEventArgs e)
         {
-            Console.WriteLine(e.Message);
+            Console.WriteLine($"[{e.Severity}] [{e.Source}] {e.Message}");
         }
 
     }
