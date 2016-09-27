@@ -41,10 +41,8 @@ namespace DiscoBot
         public MyBot()
         {
             //rand = new Random((Int32)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds);
-            rand = new Random(DateTime.Now.Millisecond);
-            int time = DateTime.Now.Millisecond;
-            Console.WriteLine("time: " + time);
-            char prefix = ';';
+            rand = new Random();
+            char prefix = '+';
 
             remPics = new string[] {
                 "Rem/rem1.gif", "Rem/rem2.png", "Rem/rem3.jpg", "Rem/rem4.jpg", "Rem/rem5.jpg",
@@ -155,8 +153,10 @@ namespace DiscoBot
                 {
                     try
                     {
-                        await discord.Connect(token, TokenType.Bot);//REAL BOT
-                        
+                        //await discord.Connect(token, TokenType.Bot);//REAL BOT
+                        await discord.Connect("MjI5MDAwOTQ2MTk2MjgzMzky.Cswfbg.Xn2GPF1G8mVpmzjLvLFBhXTB80U", TokenType.Bot);//TESTBOT   
+
+
 
 
                         break;
@@ -181,7 +181,7 @@ namespace DiscoBot
             {
                 e.Channel.SendFile("memes/facepalm.png");
             }
-            else if (e.Message.RawText.StartsWith("Kappa") || e.Message.RawText.StartsWith("kappa"))
+            else if (e.Message.RawText.Contains("Kappa") || e.Message.RawText.Contains("kappa"))
             {
                 e.Channel.SendFile("memes/Kappa.png");
             }
