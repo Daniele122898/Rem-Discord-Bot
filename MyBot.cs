@@ -23,6 +23,7 @@ namespace DiscoBot
 
         string[] freshestMemes;
         string[] remPics;
+        string[] coinFlip;
         ulong[] whitelist;
 
 
@@ -39,8 +40,11 @@ namespace DiscoBot
 
         public MyBot()
         {
-            rand = new Random();
-            char prefix = '+';
+            //rand = new Random((Int32)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds);
+            rand = new Random(DateTime.Now.Millisecond);
+            int time = DateTime.Now.Millisecond;
+            Console.WriteLine("time: " + time);
+            char prefix = ';';
 
             remPics = new string[] {
                 "Rem/rem1.gif", "Rem/rem2.png", "Rem/rem3.jpg", "Rem/rem4.jpg", "Rem/rem5.jpg",
@@ -55,6 +59,12 @@ namespace DiscoBot
                 "memes/meme1.jpg", //0
                 "memes/meme2.jpg", //1
                 "memes/meme3.png" //2
+            };
+
+            coinFlip = new string[]
+            {
+                "Coin/obverse.png",
+                "Coin/reverse.png"
             };
 
             whitelist = new ulong[]{
@@ -107,6 +117,7 @@ namespace DiscoBot
             RegisterLastActiveCommand();
             RegisterAFKCommand();
             RegisterOPCommand();
+            RegisterCoinFlipCommand();
             //RegisterAFKCommand2();
 
             //Prefix TODO ;_;
@@ -144,8 +155,9 @@ namespace DiscoBot
                 {
                     try
                     {
-                        //await discord.Connect(token, TokenType.Bot);//REAL BOT
-                        await discord.Connect("MjI5MDAwOTQ2MTk2MjgzMzky.CskvdA.ZfKbgo_nKJNkHcTKiWGbyYYx_rY", TokenType.Bot);//TESTBOT   
+                        await discord.Connect(token, TokenType.Bot);//REAL BOT
+                        
+
 
                         break;
                     }
@@ -830,6 +842,18 @@ namespace DiscoBot
                 {
                     await e.Channel.SendFile("Rem/morning.jpg");
                     await e.Channel.SendMessage("Good Morning " + e.User.Mention);
+                });
+        }
+
+        private void RegisterCoinFlipCommand()
+        {
+            commands.CreateCommand("flip")
+                .Description("Flips a coin for you")
+                .Do(async (e) =>
+                {
+                    int randomFlipIndex = rand.Next(coinFlip.Length);
+                    string coinToPost = coinFlip[randomFlipIndex];
+                    await e.Channel.SendFile(coinToPost);
                 });
         }
 
